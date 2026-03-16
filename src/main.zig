@@ -2,8 +2,10 @@ const std = @import("std");
 const chip_8_zig = @import("chip_8_zig");
 
 pub fn main() !void {
-    var memory = [_]u8{0} ** 4096;
-    const display: [64][32]bool = .{.{0} ** 32} ** 64;
+    var memory: [4096]u8 = undefined;
+    const display: [64][32]bool = .{.{false} ** 32} ** 64;
+    const stack: [16]u16 = undefined;
+    const stack_ptr = u8;
 
     // store font data
     var font_item = [_]u8{
@@ -27,4 +29,6 @@ pub fn main() !void {
     @memcpy(memory[80..160], &font_item);
 
     _ = display;
+    _ = stack;
+    _ = stack_ptr;
 }
