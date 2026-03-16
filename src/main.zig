@@ -8,8 +8,8 @@ pub fn main() !void {
     var stack_ptr: u8 = 0;
     var delay_timer: u8 = 0;
     var sound_timer: u8 = 0;
-    var pc: u8 = 0;
-    var registers: [16]u8 = undefined;
+    var pc: u16 = 0;
+    var registers: [16]u16 = undefined;
 
     // store font data
     var font_item = [_]u8{
@@ -59,7 +59,7 @@ pub fn main() !void {
                     stack[stack_ptr] = 0;
                     stack_ptr -= 1;
                 },
-                else => 0,
+                else => {},
             },
 
             // jump
@@ -73,7 +73,7 @@ pub fn main() !void {
             0x3 => if (nn == registers[x]) { pc += 2; },
             0x4 => if (nn != registers[x]) { pc += 2; },
             0x5 => if (x == y) { pc += 2; },
-            0x6 => registers[x] == nn,
+            0x6 => registers[x] = nn,
             0x7 => registers[x] += nn,
             0x8 => switch (n) {
                 0x0 => registers[x] = registers[y],
@@ -85,20 +85,24 @@ pub fn main() !void {
                 0x6 => registers[x] = registers[x] >> 1,
                 0x7 => registers[x] = registers[y] - registers[x],
                 0xD => registers[x] = registers[x] << 1,
-                else => 0,
+                else => {},
             },
             0x9 => if (x != y) { pc += 2; },
             0xA => i = nnn,
             0xB => pc = nnn + registers[0],
             0xC => {
-                var prng = std.Random.DefaultPrng();
+                var prng: std.Random.DefaultPrng = .init(blk: {
+                    var seed: u64 = undefined;
+                    try std.posix.getrandom(std.mem.asBytes(&seed));
+                    break :blk seed;
+                });
                 const rand = prng.random();
-                rand.intRangeAtMost(u8, 0, 255) & nn;
+                registers[x] = rand.intRangeAtMost(u16, 0, 255) & nn;
             },
-            0xD => 0,
-            0xE => 0,
-            0xF => 0,
-            else => 1,
+            0xD => {},
+            0xE => {},
+            0xF => {},
+            else => {},
         };
 
         _ = result;
