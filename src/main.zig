@@ -1,10 +1,10 @@
 const std = @import("std");
+const writer = std.Io.File.Writer;
 const chip_8_zig = @import("chip_8_zig");
 
 pub fn main() !void {
-    // Prints to stderr, ignoring potential errors.
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
-    try chip_8_zig.bufferedPrint();
+    const memory = [4096]u8;
+    _ = memory;
 }
 
 test "simple test" {
