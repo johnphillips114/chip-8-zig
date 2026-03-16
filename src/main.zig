@@ -9,7 +9,6 @@ pub fn main() !void {
     var delay_timer: u8 = 0;
     var sound_timer: u8 = 0;
     var pc: u8 = 0;
-    var i: u16 = 0;
     var registers: [16]u8 = undefined;
 
     // store font data
@@ -38,7 +37,7 @@ pub fn main() !void {
 
     while (true) {
         //fetch
-        i = memory[pc] << 8 | memory[pc+1];
+        var i: u16 = @as(u16, @intCast(memory[pc])) << 8 | @as(u16, @intCast(memory[pc+1]));
         pc += 2;
 
         // decode & execute
@@ -102,6 +101,8 @@ pub fn main() !void {
             15 => 0,
             else => 1,
         };
+
+        _ = result;
 
         // execute
     }
